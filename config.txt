@@ -9,6 +9,7 @@
         "basewww" : "c:\\wamp\\www",
         "acmepath" : "C:\\Users\\AzureUser\\Downloads\\win-acme\\wacs.exe",
         "apacherestart" : "C:\\wamp\\bin\\apache\\apache2.4.37\\bin\\httpd -k restart -n wampapache64"
+        
 
     },
     "domains":[

@@ -16,13 +16,17 @@ var config = configjson.config;
 
 console.log(config)
 
-var vhostpath = config.vhostpath;
-var pempath = config.pempath;
 
 var domains = configjson.domains
 //console.log(domains)
 
-const pembackupdir = path.join(pempath,"backup")
+
+
+if (!fs.existsSync(config.pempath)){
+    fs.mkdirSync(config.pempath);
+}
+
+const pembackupdir = path.join(config.pempath,"backup")
 if (!fs.existsSync(pembackupdir)){
     fs.mkdirSync(pembackupdir);
 }
@@ -31,6 +35,8 @@ const vhostbackupdir = path.join(config.vhostpath,"backup")
 if (!fs.existsSync(vhostbackupdir)){
     fs.mkdirSync(vhostbackupdir);
 }
+
+
 
 
 var isNewDomainExist = false;
@@ -42,7 +48,7 @@ domains.forEach((data)=>{
     var domain = data.name
 
 
-    var files = fs.readdirSync(pempath).filter(fn=>fn.startsWith(domain))
+    var files = fs.readdirSync(config.pempath).filter(fn=>fn.startsWith(domain))
 
     if (files.length > 1){
 
@@ -56,7 +62,7 @@ domains.forEach((data)=>{
 
                 var newfilename = `bk_${Math.ceil(Date.now()/1000)}_${file}`
 
-                fs.copyFileSync(path.join(pempath,file),path.join(pembackupdir,newfilename))
+                fs.copyFileSync(path.join(config.pempath,file),path.join(pembackupdir,newfilename))
 
             })
 
@@ -236,9 +242,9 @@ SSLCipherSuite ALL:!ADH:!EXPORT56:RC4+RSA:+HIGH:+MEDIUM:+LOW:+SSLv2:+EXP:+eNULL
 
 
 
-    SSLCertificateFile ${path.join(pempath,domain.name)}-crt.pem
-    SSLCertificateKeyFile ${path.join(pempath,domain.name)}-key.pem
-    SSLCertificateChainFile ${path.join(pempath,domain.name)}-chain.pem
+    SSLCertificateFile ${path.join(config.pempath,domain.name)}-crt.pem
+    SSLCertificateKeyFile ${path.join(config.pempath,domain.name)}-key.pem
+    SSLCertificateChainFile ${path.join(config.pempath,domain.name)}-chain.pem
         <Directory ${path.join(config.basewww,domain.rootdir)}>
             Options -Indexes +Includes +FollowSymLinks +MultiViews
             AllowOverride All
@@ -275,7 +281,7 @@ function checkExistCertExpire(data){
     var certname = `${domain}-crt.pem`
 
 
-    var buffer = fs.readFileSync(path.join(pempath,certname))
+    var buffer = fs.readFileSync(path.join(config.pempath,certname))
 
 
     const cert = forge.pki.certificateFromPem(buffer)
