@@ -6,36 +6,30 @@
     "config":{
 
         "pempath":"c:\\pem",
-        "vhostpath":"C:\\wamp\\bin\\apache\\apache2.4.37\\conf\\extra",
+        "vhostpath":"C:\\apache\\conf\\extra",
         "vhostfile" : "httpd-vhosts.conf",
         "sslfile" : "httpd-ssl.conf",
-        "basewww" : "c:\\wamp\\www",
-        "acmepath" : "C:\\Users\\AzureUser\\Downloads\\win-acme\\wacs.exe",
-        "apacherestart" : "C:\\wamp\\bin\\apache\\apache2.4.37\\bin\\httpd -k restart -n wampapache64"
+        "basewww" : "c:\\apache\\www",
+        "acmepath" : "C:\\win-acme\\wacs.exe",
+        "apacherestart" : "C:\\apache\\bin\\httpd -k restart"
         
 
     },
     "domains":[
 
         {
-            "name" : "360tour.cc",
-            "rootdir" : "shopall"
+            "name" : "aaa.com",
+            "rootdir" : "aaa"
 
 
         },
         {
 
-            "name" : "shop2.360tour.cc",
-            "rootdir" : "shop2"
+            "name" : "sub1.aaa.com",
+            "rootdir" : "sub\\sub1"
 
         },
-        {
 
-            "name":"shop.360tour.cc",
-            "rootdir" : "shop"
-
-
-        }
 
 
 
