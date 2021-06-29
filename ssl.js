@@ -7,7 +7,6 @@ var dateFormat = require("dateformat");
 
 
 
-
 const configfile = fs.readFileSync('config.txt')
 var configjson = JSON.parse(configfile)
 
@@ -35,6 +34,12 @@ const vhostbackupdir = path.join(config.vhostpath,"backup")
 if (!fs.existsSync(vhostbackupdir)){
     fs.mkdirSync(vhostbackupdir);
 }
+
+const tempdirforauth = path.join(config.basewww,"tempforauth")
+if (!fs.existsSync(tempdirforauth)){
+    fs.mkdirSync(tempdirforauth);
+}
+
 
 
 
@@ -81,14 +86,18 @@ domains.forEach((data)=>{
 console.log('\x1b[33m%s\x1b[0m',"domains to be renewed")
 console.log(domainToBeRenewed)
 
-// generate new html-vhost and html-ssl file 
-generateNewVhostFile();
+
 
 //restartapache();
 
-if (isNewDomainExist){
+if ( domainToBeRenewed.length > 0){
 
-    console.log("new domain exists");
+    console.log("need renew cert");
+
+    // vhost to make all domain to an temp directory
+    // to avoid any exsiting .htacess or redirect logic 
+
+    generateTempVhostFileforauth();
 
     restartapache();
 
@@ -114,6 +123,10 @@ domainToBeRenewed.forEach(data=>{
 })
 
 
+// generate new html-vhost and html-ssl file 
+generateNewVhostFile();
+
+
 generateNewSSLHostFile();
 
 
@@ -133,12 +146,71 @@ function restartapache(){
 
 }
 
-
-function generateNewVhostFile(){
+function generateTempVhostFileforauth(){
 
     var newfilename = `bk_${Math.ceil(Date.now()/1000)}_${config.vhostfile}`
 
     fs.copyFileSync(path.join(config.vhostpath,config.vhostfile),path.join(vhostbackupdir,newfilename))
+
+    var text = '';
+
+    configjson.domains.forEach(domain=>{
+
+
+        console.log(domain)
+
+        var serveralias = domain.name
+
+        if (domain.name.split('.').length == 2){
+
+            // top level domain 
+
+            serveralias = `${domain.name} www.${domain.name}`
+        }
+
+        var datestr = dateFormat(new Date(),("yy-mmmm-dd"))
+
+var vhoststr =`<VirtualHost *:80>
+
+DocumentRoot "${tempdirforauth}"
+ServerName ${domain.name}
+ServerAlias ${serveralias}
+     ErrorLog "logs/${domain.name}-error-${datestr}.log"
+CustomLog "logs/${domain.name}-access-${datestr}.log" common env=!dontlog
+
+<Directory ${tempdirforauth}>
+    Options -Indexes +Includes +FollowSymLinks +MultiViews
+    AllowOverride All
+    Require all granted
+</Directory>	
+
+</VirtualHost>\n\n`
+
+
+//
+
+
+
+        text += vhoststr
+
+
+    })
+
+
+    //console.log(text);
+
+    fs.writeFileSync(path.join(config.vhostpath,config.vhostfile),text)
+
+
+
+}
+
+
+function generateNewVhostFile(){
+
+    // var newfilename = `bk_${Math.ceil(Date.now()/1000)}_${config.vhostfile}`
+
+    // fs.copyFileSync(path.join(config.vhostpath,config.vhostfile),path.join(vhostbackupdir,newfilename))
 
 
     var text = '';
