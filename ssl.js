@@ -112,9 +112,16 @@ domainToBeRenewed.forEach(data=>{
 
     console.log(data.name)
 
+    var hostname = data.name
+
+    if (data.name.split(".").length == 2){
+
+        hostname = `${data.name},www.${data.name}`
+    }
+
 
     var rootdir = path.join(config.basewww,data.rootdir)
-    var getCert = `${config.acmepath} --target manual --host ${data.name} --validation filesystem --webroot "${rootdir}" --store pemfiles --pemfilespath ${config.pempath}`
+    var getCert = `${config.acmepath} --target manual --host ${hostname} --validation filesystem --webroot "${tempdirforauth}" --store pemfiles --pemfilespath ${config.pempath}`
 
 
     console.log(getCert);
@@ -149,6 +156,14 @@ function restartapache(){
 }
 
 function generateTempVhostFileforauth(){
+
+
+    // clear all content of ssl file
+
+    var empty = ''
+
+    fs.writeFileSync(path.join(config.vhostpath,config.sslfile),empty)
+
 
     var newfilename = `bk_${Math.ceil(Date.now()/1000)}_${config.vhostfile}`
 
@@ -310,7 +325,7 @@ ServerAlias ${serveralias}
 CustomLog "logs/${domain.name}-access-${datestr}.log" common env=!dontlog
 SSLEngine on  
 
-SSLProtocol -all +TLSv1 +TLSv1.1 +TLSv1.2
+SSLProtocol -all +TLSv1 +TLSv1.1 +TLSv1.2 
 
 SSLCipherSuite ALL:!ADH:!EXPORT56:RC4+RSA:+HIGH:+MEDIUM:+LOW:+SSLv2:+EXP:+eNULL  
 
