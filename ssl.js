@@ -228,7 +228,18 @@ function generateNewVhostFile(){
     // fs.copyFileSync(path.join(config.vhostpath,config.vhostfile),path.join(vhostbackupdir,newfilename))
 
 
-    var text = '';
+    var text = `
+    <VirtualHost *:80>
+  ServerName localhost
+  ServerAlias localhost
+  DocumentRoot ${config.basewww}
+  <Directory ${config.basewww}>
+    Options +Indexes +Includes +FollowSymLinks +MultiViews
+    #AllowOverride All
+    Require local
+  </Directory>
+</VirtualHost>
+`;
 
     configjson.domains.forEach(domain=>{
 
