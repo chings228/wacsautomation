@@ -28,7 +28,7 @@
             "name" : "sub1.aaa.com",
             "rootdir" : "sub\\sub1"
 
-        },
+        }
 
 
 
