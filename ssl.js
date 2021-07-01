@@ -223,9 +223,9 @@ CustomLog "logs/${domain.name}-access-${datestr}.log" common env=!dontlog
 
 function generateNewVhostFile(){
 
-    // var newfilename = `bk_${Math.ceil(Date.now()/1000)}_${config.vhostfile}`
+    var newfilename = `bk_${Math.ceil(Date.now()/1000)}_${config.vhostfile}`
 
-    // fs.copyFileSync(path.join(config.vhostpath,config.vhostfile),path.join(vhostbackupdir,newfilename))
+    fs.copyFileSync(path.join(config.vhostpath,config.vhostfile),path.join(vhostbackupdir,newfilename))
 
 
     var text = `
