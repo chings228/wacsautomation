@@ -11,8 +11,8 @@
         "sslfile" : "httpd-ssl.conf",
         "basewww" : "c:\\apache\\www",
         "acmepath" : "C:\\win-acme\\wacs.exe",
-        "apacherestart" : "C:\\apache\\bin\\httpd -k restart"
-        
+        "apacherestart" : "C:\\apache\\bin\\httpd -k restart",
+        "hostip" : "xxx.xxx.xxx"
 
     },
     "domains":[

@@ -5,6 +5,9 @@ const forge = require('node-forge')
 const {execFile,exec,execFileSync,execSync} = require('child_process');
 var dateFormat = require("dateformat");
 
+const dns = require('dns')
+const dnssync = require('dns-sync')
+
 
 
 const configfile = fs.readFileSync('config.txt')
@@ -51,6 +54,16 @@ var domainToBeRenewed = [];
 domains.forEach((data)=>{
 
     var domain = data.name
+
+    var hostip = dnssync.resolve(domain);
+
+    console.log(domain,hostip)
+
+    if (hostip != config.hostip){
+
+        return;
+
+    }
 
 
     var files = fs.readdirSync(config.pempath).filter(fn=>fn.startsWith(domain))
@@ -131,13 +144,18 @@ domainToBeRenewed.forEach(data=>{
 
 
 // generate new html-vhost and html-ssl file 
-generateNewVhostFile();
+
+if (domainToBeRenewed.length > 0){
+
+    generateNewVhostFile();
 
 
-generateNewSSLHostFile();
+    generateNewSSLHostFile();
+    
+    
+    restartapache();
+}
 
-
-restartapache();
 
 
 
