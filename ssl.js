@@ -145,7 +145,7 @@ domainToBeRenewed.forEach(data=>{
 
 // generate new html-vhost and html-ssl file 
 
-if (domainToBeRenewed.length > 0){
+if (domainToBeRenewed.length > 0 || config.forceUpdateVhostEvenNoDomainUpdate){
 
     generateNewVhostFile();
 
