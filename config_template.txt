@@ -12,14 +12,17 @@
         "basewww" : "c:\\apache\\www",
         "acmepath" : "C:\\win-acme\\wacs.exe",
         "apacherestart" : "C:\\apache\\bin\\httpd -k restart",
-        "hostip" : "xxx.xxx.xxx"
+        "hostip" : "xxx.xxx.xxx",
+        "forceUpdateVhostEvenNoDomainUpdate":true
+        
 
     },
     "domains":[
 
         {
             "name" : "aaa.com",
-            "rootdir" : "aaa"
+            "rootdir" : "aaa",
+            "sslForward":true
 
 
         },
