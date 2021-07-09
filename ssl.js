@@ -295,6 +295,8 @@ if (typeof domain.sslForward  !== 'undefined'){
     RewriteRule ^/?(.*) https://%{SERVER_NAME}/$1 [R,L]
         
         `
+
+        
     }
 }
 
