@@ -145,7 +145,7 @@ domainToBeRenewed.forEach(data=>{
 
 // generate new html-vhost and html-ssl file 
 
-if (domainToBeRenewed.length > 0){
+if (domainToBeRenewed.length > 0 || config.forceUpdateVhostEvenNoDomainUpdate){
 
     generateNewVhostFile();
 
@@ -281,9 +281,26 @@ DocumentRoot "${path.join(config.basewww,domain.rootdir)}"
 ServerName ${domain.name}
 ServerAlias ${serveralias}
      ErrorLog "logs/${domain.name}-error-${datestr}.log"
-CustomLog "logs/${domain.name}-access-${datestr}.log" common env=!dontlog
+CustomLog "logs/${domain.name}-access-${datestr}.log" common env=!dontlog\n`
 
-<Directory ${path.join(config.basewww,domain.rootdir)}>
+
+if (typeof domain.sslForward  !== 'undefined'){
+
+    if (domain.sslForward){
+
+        vhoststr += `
+        RewriteEngine on
+
+    RewriteCond %{SERVER_PORT} 80 
+    RewriteRule ^/?(.*) https://%{SERVER_NAME}/$1 [R,L]
+        
+        `
+    }
+}
+
+
+
+vhoststr+=`\n<Directory ${path.join(config.basewww,domain.rootdir)}>
     Options -Indexes +Includes +FollowSymLinks +MultiViews
     AllowOverride All
     Require all granted
